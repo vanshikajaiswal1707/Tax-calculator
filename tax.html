@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Indian Income Tax Calculator (Old Regime)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    p.description {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      text-align: left;
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 6px;
+    }
+
+    .result p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Indian Income Tax Calculator</h2>
+    <p class="description">
+      This calculator estimates your income tax liability under the <strong>Old Tax Regime</strong> for FY 2024-25 (AY 2025-26).<br>
+      Based on standard tax slabs and rebate under Section 87A.
+    </p>
+
+    <label for="income">Enter Your Annual Income (₹):</label>
+    <input type="number" id="income" placeholder="e.g. 750000" min="0">
+    <button onclick="calculateIndianTax()">Calculate Tax</button>
+
+    <div class="result" id="result" style="display: none;"></div>
+  </div>
+
+  <script>
+    function calculateIndianTax() {
+      const incomeInput = document.getElementById('income');
+      const resultDiv = document.getElementById('result');
+      const income = parseFloat(incomeInput.value);
+      let tax = 0;
+
+      if (isNaN(income) || income < 0) {
+        alert("Please enter a valid income.");
+        return;
+      }
+
+      // Tax slabs under Old Regime
+      if (income <= 250000) {
+        tax = 0;
+      } else if (income <= 500000) {
+        tax = (income - 250000) * 0.05;
+        if (income <= 500000) {
+          // Section 87A rebate (₹12,500)
+          tax = 0;
+        }
+      } else if (income <= 1000000) {
+        tax = (250000 * 0.05) + (income - 500000) * 0.20;
+      } else {
+        tax = (250000 * 0.05) + (500000 * 0.20) + (income - 1000000) * 0.30;
+      }
+
+      const netIncome = income - tax;
+
+      // Format number in Indian Rupees with commas
+      const formatINR = (num) => {
+        return "₹" + num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+      };
+
+      resultDiv.innerHTML = `
+        <p><strong>Gross Annual Income:</strong> ${formatINR(income)}</p>
+        <p><strong>Estimated Tax Payable:</strong> ${formatINR(tax)}</p>
+        <p><strong>Net Income After Tax:</strong> ${formatINR(netIncome)}</p>
+        <hr>
+        <p><em>Note: This is an approximate calculation. Actual tax may vary based on deductions, exemptions, and surcharges.</em></p>
+      `;
+      resultDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+
